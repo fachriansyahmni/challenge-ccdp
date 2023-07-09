@@ -4,36 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class Meter {
-    private static Meter instance;
-
     private double meter;
+    private double centimeter;
+    private double kilometer;
 
-    private MutableLiveData<String> kilometer;
-    private MutableLiveData<String> centimeter;
+    public double getMeter() { return meter; }
 
-    private Meter() {
-        this.meter = 0;
-        this.kilometer = new MutableLiveData<>();
-        this.centimeter = new MutableLiveData<>();
-    }
-
-    public static synchronized Meter getInstance() {
-        if (instance == null) {
-            instance = new Meter();
-        }
-
-        return instance;
-    }
-
-    public static void destroy() {
-        instance = null;
-    }
-
-    public LiveData<String> getKilometer() {
-        return kilometer;
-    }
-
-    public LiveData<String> getCentimeter() {
+    public double getCentimeter() {
         return centimeter;
     }
 
@@ -41,13 +18,13 @@ public class Meter {
         this.meter = meter;
     }
 
-    public void toKilometer() {
-        double kilometer =  meter / 1000;
-        this.kilometer.postValue(kilometer + "");
-    }
+    public void setCentimeter(double centimeter) { this.centimeter = centimeter; }
 
-    public void toCentimeter() {
-        double centimeter =  meter * 100;
-        this.centimeter.postValue(centimeter + "");
-    }
+    public double getKilometer() { return kilometer; }
+
+    public void setKilometer(double kilometer) { this.kilometer = kilometer; }
+
+    public double toKilometer() { return kilometer = meter / 1000; }
+
+    public double toCentimeter() { return centimeter = meter * 100; }
 }

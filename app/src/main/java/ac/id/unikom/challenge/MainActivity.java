@@ -1,39 +1,46 @@
 package ac.id.unikom.challenge;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-public class MainActivity extends AppCompatActivity implements MainView{
+public class MainActivity extends AppCompatActivity {
 
     private EditText meter;
     private EditText kilometer;
     private EditText centimeter;
-    private MainController controller;
-    private Meter model;
+
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        controller = new MainController(this);
-        model = Meter.getInstance();
+        
+        viewModel = new MainViewModel();
 
         initView();
+        initViewModel();
         observeModel();
     }
 
     private void observeModel() {
-        model.getCentimeter().observe(this, centimeter -> {
-            this.centimeter.setText(centimeter);
+        viewModel.getMeter().observe(this, meter -> {
+            String parsedCentimeter = getString(R.string.float_to_string, meter.toCentimeter());
+            String parsedKilometer = getString(R.string.float_to_string, meter.toKilometer());
+
+            centimeter.setText(parsedCentimeter);
+            kilometer.setText(parsedKilometer);
         });
 
-        model.getKilometer().observe(this, kilometer -> {
-            this.kilometer.setText(kilometer);
-        });
+    }
+
+    private void initViewModel() {
+         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
     }
 
     private void initView() {
@@ -54,20 +61,9 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                controller.calculateLength();
+                String meter = editable.toString();
+                viewModel.setMeter(meter);
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        controller = null;
-        Meter.destroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public String getMeter() {
-        return meter.getText().toString();
     }
 }
