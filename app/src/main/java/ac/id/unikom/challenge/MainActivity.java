@@ -7,33 +7,21 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-public class MainActivity extends AppCompatActivity implements MainView{
+public class MainActivity extends AppCompatActivity implements MainView {
 
     private EditText meter;
     private EditText kilometer;
     private EditText centimeter;
-    private MainController controller;
     private Meter model;
+    private MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        controller = new MainController(this);
-        model = Meter.getInstance();
+        presenter = new MainPresenter(this);
 
         initView();
-        observeModel();
-    }
-
-    private void observeModel() {
-        model.getCentimeter().observe(this, centimeter -> {
-            this.centimeter.setText(centimeter);
-        });
-
-        model.getKilometer().observe(this, kilometer -> {
-            this.kilometer.setText(kilometer);
-        });
     }
 
     private void initView() {
@@ -54,20 +42,24 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
             @Override
             public void afterTextChanged(Editable editable) {
-                controller.calculateLength();
+                presenter.calculateLength(editable.toString());
             }
         });
     }
 
     @Override
     protected void onDestroy() {
-        controller = null;
-        Meter.destroy();
+        presenter = null;
         super.onDestroy();
     }
 
     @Override
-    public String getMeter() {
-        return meter.getText().toString();
+    public void showCentimeter(String centimeter) {
+        this.centimeter.setText(centimeter);
+    }
+
+    @Override
+    public void showKilometer(String kilometer) {
+        this.kilometer.setText(kilometer);
     }
 }

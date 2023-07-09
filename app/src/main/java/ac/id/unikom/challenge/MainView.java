@@ -1,5 +1,6 @@
 package ac.id.unikom.challenge;
 
 public interface MainView {
-    String getMeter();
+    void showCentimeter(String centimeter);
+    void showKilometer(String kilometer);
 }

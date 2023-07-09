@@ -1,53 +1,19 @@
 package ac.id.unikom.challenge;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 public class Meter {
-    private static Meter instance;
-
     private double meter;
-
-    private MutableLiveData<String> kilometer;
-    private MutableLiveData<String> centimeter;
-
-    private Meter() {
-        this.meter = 0;
-        this.kilometer = new MutableLiveData<>();
-        this.centimeter = new MutableLiveData<>();
-    }
-
-    public static synchronized Meter getInstance() {
-        if (instance == null) {
-            instance = new Meter();
-        }
-
-        return instance;
-    }
-
-    public static void destroy() {
-        instance = null;
-    }
-
-    public LiveData<String> getKilometer() {
-        return kilometer;
-    }
-
-    public LiveData<String> getCentimeter() {
-        return centimeter;
-    }
+    private double centimeter;
+    private double kilometer;
 
     public void setMeter(double meter) {
         this.meter = meter;
     }
 
-    public void toKilometer() {
-        double kilometer =  meter / 1000;
-        this.kilometer.postValue(kilometer + "");
+    public double toCentimeter() {
+        return meter * 100;
     }
 
-    public void toCentimeter() {
-        double centimeter =  meter * 100;
-        this.centimeter.postValue(centimeter + "");
+    public double toKilometer() {
+        return meter / 1000;
     }
 }
